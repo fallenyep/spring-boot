@@ -20,13 +20,13 @@
 		<developerConnection>${git.developerConnection}</developerConnection>
 	</scm>
 	<modules>
-		<module>org.springframework.boot.gradle.plugin</module>
+<!--		<module>org.springframework.boot.gradle.plugin</module>-->
 		<module>spring-boot-antlib</module>
 		<module>spring-boot-autoconfigure-processor</module>
 		<module>spring-boot-configuration-docs</module>
 		<module>spring-boot-configuration-metadata</module>
 		<module>spring-boot-configuration-processor</module>
-		<module>spring-boot-gradle-plugin</module>
+<!--		<module>spring-boot-gradle-plugin</module>-->
 		<module>spring-boot-loader</module>
 		<module>spring-boot-loader-tools</module>
 		<module>spring-boot-maven-plugin</module>
