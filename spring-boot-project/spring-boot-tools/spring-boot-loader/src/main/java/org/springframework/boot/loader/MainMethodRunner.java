@@ -43,8 +43,13 @@ public class MainMethodRunner {
 	}
 
 	public void run() throws Exception {
+		// <1> 通过 LaunchedURLClassLoader 类加载器，加载到我们设置的 Spring Boot 的主启动类。
 		Class<?> mainClass = Thread.currentThread().getContextClassLoader().loadClass(this.mainClassName);
+		// <2> 通过反射调用主启动类的 #main(String[] args) 方法，启动 Spring Boot 应用。
+		// 这里也告诉了我们答案，为什么我们通过编写一个带有 #main(String[] args) 方法的类，就能够启动 Spring Boot 应用。
+		/*getDeclaredMethod方法用于获取类的方法名，第一个参数是方法名，第二个参数是方法的参数类型 */
 		Method mainMethod = mainClass.getDeclaredMethod("main", String[].class);
+		/*invoke方法用于调用类的方法，第一个参数是调用的对象，第二个参数是方法的参数 */
 		mainMethod.invoke(null, new Object[] { this.args });
 	}
 

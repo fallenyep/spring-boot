@@ -53,8 +53,10 @@ public abstract class ExecutableArchiveLauncher extends Launcher {
 
 	@Override
 	protected String getMainClass() throws Exception {
+		// 从 jar 包的 MANIFEST.MF 文件的 Start-Class 配置项，，获得设置的 Spring Boot 的主启动类
 		Manifest manifest = this.archive.getManifest();
 		String mainClass = null;
+		// 获得启动的类的全名
 		if (manifest != null) {
 			mainClass = manifest.getMainAttributes().getValue("Start-Class");
 		}
@@ -66,7 +68,10 @@ public abstract class ExecutableArchiveLauncher extends Launcher {
 
 	@Override
 	protected List<Archive> getClassPathArchives() throws Exception {
+		// <1> 获得所有 Archive
+		// this.archive.getNestedArchives 代码段，调用 Archive 的 #getNestedArchives(EntryFilter filter) 方法，获得 archive 内嵌的 Archive 集合
 		List<Archive> archives = new ArrayList<>(this.archive.getNestedArchives(this::isNestedArchive));
+		// <2> 后续处理
 		postProcessClassPathArchives(archives);
 		return archives;
 	}

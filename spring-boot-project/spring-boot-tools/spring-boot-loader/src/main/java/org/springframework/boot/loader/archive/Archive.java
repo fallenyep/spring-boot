@@ -31,6 +31,7 @@ import org.springframework.boot.loader.Launcher;
  * @since 1.0.0
  * @see JarFileArchive
  */
+// Archive 接口，是 spring-boot-loader 项目定义的档案抽象，其子类ExplodedArchive 是针对目录的 Archive 实现类。JarFileArchive 是针对 jar 包的 Archive 实现类。
 public interface Archive extends Iterable<Archive.Entry>, AutoCloseable {
 
 	/**

@@ -337,6 +337,12 @@ public class Handler extends URLStreamHandler {
 	 * which are then swallowed.
 	 * @param useFastConnectionExceptions if fast connection exceptions can be used.
 	 */
+	/*setUseFastConnectionExceptions方法用于设置是否使用快速连接异常，默认值为 true。*/
+	/*
+	 * 当 URL 无法连接时是否可以抛出通用静态异常。
+	 * 此优化在类加载期间用于保存创建许多异常，这些异常最终会被吞噬。
+	 * @param useFastConnectionExceptions 如果可以使用快速连接异常。
+	 */
 	public static void setUseFastConnectionExceptions(boolean useFastConnectionExceptions) {
 		JarURLConnection.setUseFastExceptions(useFastConnectionExceptions);
 	}

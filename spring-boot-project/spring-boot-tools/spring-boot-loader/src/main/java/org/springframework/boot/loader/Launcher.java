@@ -46,9 +46,16 @@ public abstract class Launcher {
 	 * @throws Exception if the application fails to launch
 	 */
 	protected void launch(String[] args) throws Exception {
+		// <1> 注册 URL 协议的处理器，用于 jar 包的加载读取
 		JarFile.registerUrlProtocolHandler();
+		// <2> 创建类加载器，用于从 jar 包中加载类
 		ClassLoader classLoader = createClassLoader(getClassPathArchives());
+		// <3> 执行我们声明的 Spring Boot 启动类 main 方法，进行 Spring Boot 应用的启动
 		launch(args, getMainClass(), classLoader);
+
+		/*简单来说，就是整一个可以读取 jar 包中类的加载器，
+		保证 BOOT-INF/lib 目录下的类和 BOOT-classes 内嵌的 jar 中的类能够被正常加载到，
+		之后执行 Spring Boot 应用的启动。*/
 	}
 
 	/**
@@ -58,10 +65,12 @@ public abstract class Launcher {
 	 * @throws Exception if the classloader cannot be created
 	 */
 	protected ClassLoader createClassLoader(List<Archive> archives) throws Exception {
+		// 获得所有 Archive 的 URL 地址
 		List<URL> urls = new ArrayList<>(archives.size());
 		for (Archive archive : archives) {
 			urls.add(archive.getUrl());
 		}
+		// 创建加载这些 URL 的 ClassLoader
 		return createClassLoader(urls.toArray(new URL[0]));
 	}
 
@@ -72,6 +81,8 @@ public abstract class Launcher {
 	 * @throws Exception if the classloader cannot be created
 	 */
 	protected ClassLoader createClassLoader(URL[] urls) throws Exception {
+		//基于获得的 Archive 数组，创建自定义 ClassLoader 实现类 LaunchedURLClassLoader，
+		// 通过它来加载 BOOT-INF/classes 目录下的类，以及 BOOT-INF/lib 目录下的 jar 包中的类。
 		return new LaunchedURLClassLoader(urls, getClass().getClassLoader());
 	}
 
@@ -83,7 +94,9 @@ public abstract class Launcher {
 	 * @throws Exception if the launch fails
 	 */
 	protected void launch(String[] args, String mainClass, ClassLoader classLoader) throws Exception {
+		// <1> 设置 LaunchedURLClassLoader 作为类加载器，从而保证能够从 jar 加载到相应的类。
 		Thread.currentThread().setContextClassLoader(classLoader);
+		// <2> 创建 MainMethodRunner 对象，并执行 run 方法，启动 Spring Boot 应用
 		createMainMethodRunner(mainClass, args, classLoader).run();
 	}
 
@@ -120,10 +133,13 @@ public abstract class Launcher {
 		if (path == null) {
 			throw new IllegalStateException("Unable to determine code source archive");
 		}
+		// root路径是jar 所在的绝对路径
 		File root = new File(path);
 		if (!root.exists()) {
 			throw new IllegalStateException("Unable to determine code source archive from " + root);
 		}
+		// 如果是目录，则使用 ExplodedArchive 进行展开
+		// 如果不是目录，则使用 JarFileArchive
 		return (root.isDirectory() ? new ExplodedArchive(root) : new JarFileArchive(root));
 	}
 
